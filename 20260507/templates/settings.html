@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="py-3">
+    <h5 class="fw-bold mb-4">個人資料設定</h5>
+    <div class="card border-0 shadow-sm p-3 bg-light text-center mb-4">
+        <p class="text-muted small">當前使用的頭像</p>
+        <img id="current-setting-avatar" src="" class="rounded-circle mx-auto bg-white shadow-sm mb-3" style="width: 80px; height: 80px; object-fit: cover;">
+        <h5 id="current-setting-name" class="fw-bold text-dark"></h5>
+    </div>
+    <button onclick="logout()" class="btn btn-danger w-100 py-2 shadow-sm">清除暫存並登出帳號</button>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("current-setting-name").innerText = localStorage.getItem("chat_username") || "未登入";
+        document.getElementById("current-setting-avatar").src = localStorage.getItem("chat_avatar") || "https://api.dicebear.com/7.x/adventurer/svg?seed=default";
+    });
+</script>
+{% endblock %}

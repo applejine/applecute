@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="py-4 text-center">
+    <h3 class="fw-bold text-dark mb-2">建立新帳號</h3>
+    <p class="text-muted small">註冊完成後即可返回登入頁面</p>
+    
+    <div class="card border-0 shadow-sm p-4 mt-4 bg-light text-start">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label fw-bold text-secondary">自訂使用者帳號</label>
+                <input type="text" name="username" class="form-control form-control-lg border-0 shadow-sm" placeholder="例如: user2026" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold text-secondary">設定登入密碼</label>
+                <input type="password" name="password" class="form-control form-control-lg border-0 shadow-sm" placeholder="請輸入安全密碼" required>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg w-100 border-0 shadow-sm">確認註冊並儲存 💾</button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <a href="{{ url_for('login') }}" class="text-decoration-none small text-muted">已有帳號？返回登入</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

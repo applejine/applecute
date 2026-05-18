@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex flex-column" style="min-height: 82vh;">
+    
+    <div class="d-flex justify-content-between align-items-center mb-3 ps-1">
+        <span class="badge bg-light text-dark p-2 shadow-sm d-flex align-items-center gap-2">
+            <img src="{{ avatar }}" class="rounded-circle" style="width: 20px; height: 20px; object-fit: cover;">
+            Logged in as: <strong>{{ username }}</strong>
+        </span>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-danger shadow-sm d-flex align-items-center gap-1" style="font-weight: 500; border-radius: 20px;">
+            🚪 登出系統
+        </a>
+    </div>
+    
+    <div class="card border-0 shadow-sm p-3 mb-4">
+        <div class="input-group">
+            <input type="text" id="msgContent" class="form-control border-0 bg-light" placeholder="今天想聊點什麼？...">
+            <button onclick="sendMessage()" class="btn btn-primary px-4" style="background:#4f46e5; border:none;">發送</button>
+        </div>
+    </div>
+
+    <div class="flex-grow-1 overflow-auto" style="max-height: 60vh;">
+        {% for msg in messages | reverse %}
+        <div class="card border-0 shadow-sm mb-3 p-3 bg-white">
+            <div class="d-flex align-items-center mb-2">
+                <img src="{{ msg.avatar if msg.avatar else 'https://api.dicebear.com/7.x/adventurer/svg?seed=default' }}" class="chat-avatar me-2 bg-light">
+                <div>
+                    <h6 class="m-0 fw-bold text-dark">{{ msg.username }}</h6>
+                </div>
+            </div>
+            <p class="text-secondary my-2 ps-1">{{ msg.content }}</p>
+            
+            <div class="d-flex flex-wrap mt-2 pt-2 border-top border-light">
+                <button class="reaction-btn" onclick="sendReaction('{{ msg.id }}', 'like', this)">👍 <span>{{ msg.reactions.like }}</span></button>
+                <button class="reaction-btn" onclick="sendReaction('{{ msg.id }}', 'heart', this)">❤️ <span>{{ msg.reactions.heart }}</span></button>
+                <button class="reaction-btn" onclick="sendReaction('{{ msg.id }}', 'laugh', this)">😂 <span>{{ msg.reactions.laugh }}</span></button>
+                <button class="reaction-btn" onclick="sendReaction('{{ msg.id }}', 'wow', this)">😮 <span>{{ msg.reactions.wow }}</span></button>
+                <button class="reaction-btn" onclick="sendReaction('{{ msg.id }}', 'sad', this)">😢 <span>{{ msg.reactions.sad }}</span></button>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center text-muted py-5">目前沒有任何留言喔！</div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        const content = document.getElementById("msgContent").value.trim();
+        if(!content) return;
+
+        fetch('/board', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ content: content })
+        }).then(() => {
+            window.location.reload();
+        });
+    }
+
+    function sendReaction(msgId, type, btnElement) {
+        fetch(`/react/${msgId}/${type}`, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === "success") {
+                const span = btnElement.querySelector('span');
+                span.innerText = data.new_count;
+            }
+        });
+    }
+</script>
+{% endblock %}
